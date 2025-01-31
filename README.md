@@ -43,15 +43,15 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
 1. Navigate to the project directory.
 2. Run the following commands to build and run the project:
 
-```sh
-make
+    ```sh
+    make
 
-```sh
-./bin/evaluate-boolean "<expression>" <values>
+    ```sh
+    ./bin/evaluate-boolean "<expression>" <values>
 
 "Example"
-```sh
-./bin/evaluate-boolean "a + b * c + a * d * e" F T T T F
+    ```sh
+    ./bin/evaluate-boolean "a + b * c + a * d * e" F T T T F
 
 ### Example Output
 
