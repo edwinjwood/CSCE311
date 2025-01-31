@@ -1,5 +1,7 @@
 #include "util.h"
 #include <iostream>
+#include <sstream>
+#include <vector>
 
 /**
  * @brief Read the expression and values from the command line arguments.
@@ -15,10 +17,24 @@ void readExpressionAndValues(int argc, char* argv[], std::string& expression, st
     expression = argv[1];
 
     // Read variable values
+    std::vector<std::string> tokens = explode(argv[2], ' ');
     size_t varIndex = 0;
-    for (size_t i = 2; i < argc; ++i) {
+    for (const auto& token : tokens) {
         char var = 'a' + varIndex; // Variables are a, b, c, ...
-        values[var] = (argv[i][0] == 'T');
+        values[var] = (token == "T");
         varIndex++;
     }
+}
+
+/**
+ * @brief Explode a string into a vector of strings based on a delimiter.
+ */
+std::vector<std::string> explode(const std::string& str, char delimiter) {
+    std::vector<std::string> tokens;
+    std::stringstream ss(str);
+    std::string token;
+    while (std::getline(ss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
 }

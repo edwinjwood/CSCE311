@@ -48,7 +48,7 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
     
    ./bin/evaluate-boolean "<expression>" <values>
 
-   ./bin/evaluate-boolean "a + b * c + a * d * e" F T T T F
+   ./bin/evaluate-boolean "a + b * c" F T F
 
 ### Example Output
 
