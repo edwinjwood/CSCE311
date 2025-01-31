@@ -49,11 +49,10 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
     ```sh
     ./bin/evaluate-boolean "<expression>" <values>
 
-"Example"
     ```sh
     ./bin/evaluate-boolean "a + b * c + a * d * e" F T T T F
 
 ### Example Output
 
-```sh
-Result of expression is: True
+    ```sh
+    Result of expression is: True
