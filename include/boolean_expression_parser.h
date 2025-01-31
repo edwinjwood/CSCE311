@@ -4,9 +4,6 @@
 #include <string>
 #include <unordered_map>
 
-/**
- * @brief A class to parse and evaluate boolean expressions.
- */
 class BooleanExpressionParser {
 public:
     BooleanExpressionParser(const std::string& expression,

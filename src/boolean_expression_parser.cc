@@ -7,9 +7,7 @@
  */
 BooleanExpressionParser::BooleanExpressionParser(const std::string& expression,
                                                  const std::unordered_map<char, bool>& values)
-    : expression(expression), values(values), currentIndex(0), error(0) {
-    // empty
-}
+    : expression(expression), values(values), currentIndex(0), error(false) {}
 
 /**
  * @brief Parse the boolean expression
@@ -34,10 +32,6 @@ bool BooleanExpressionParser::hasError() const {
     return error;
 }
 
-/**
- * @brief Get the current character
- * @return char the current character
- */
 char BooleanExpressionParser::currentChar() const {
     if (currentIndex < expression.size()) {
         return expression[currentIndex];
@@ -45,20 +39,12 @@ char BooleanExpressionParser::currentChar() const {
     return '\0';
 }
 
-/**
- * @brief Consume the current character
- */
 void BooleanExpressionParser::consume() {
     if (currentIndex < expression.size()) {
         currentIndex++;
     }
 }
 
-/**
- * @brief Parse the expression
- * @return true if the expression is valid
- * @return false if the expression is invalid
- */
 bool BooleanExpressionParser::parseExpr() {
     bool result = parseTerm(); // Parse AND expressions first
     while (currentChar() == '+') {
@@ -69,11 +55,6 @@ bool BooleanExpressionParser::parseExpr() {
     return result;
 }
 
-/**
- * @brief Parse the term
- * @return true if the term is valid
- * @return false if the term is invalid
- */
 bool BooleanExpressionParser::parseTerm() {
     bool result = parseFactor(); // Parse primary values first
     while (currentChar() == '*') {
@@ -84,19 +65,29 @@ bool BooleanExpressionParser::parseTerm() {
     return result;
 }
 
-/**
- * @brief Parse the factor
- * @return true if the factor is valid
- * @return false if the factor is invalid
- */
 bool BooleanExpressionParser::parseFactor() {
     char token = currentChar();
+    std::cout << "Parsing factor: " << token << std::endl; // Debug output
+
     if (std::isalpha(token)) {
         consume();
         if (values.find(token) != values.end()) {
             return values.at(token);
         } else {
             reportError("Undefined variable: " + std::string(1, token));
+            return false;
+        }
+    } else if (token == 'T' || token == 'F') {
+        consume();
+        return token == 'T';
+    } else if (token == '(') {
+        consume(); // Consume the '('
+        bool result = parseExpr();
+        if (currentChar() == ')') {
+            consume(); // Consume the ')'
+            return result;
+        } else {
+            reportError("Expected closing parenthesis");
             return false;
         }
     } else {
