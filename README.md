@@ -52,5 +52,4 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
 
 ### Example Output
 
-    ```sh
     Result of expression is: True
