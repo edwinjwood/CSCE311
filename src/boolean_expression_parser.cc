@@ -1,4 +1,5 @@
 #include "boolean_expression_parser.h"
+#include "util.h"
 #include <iostream>
 
 /**
@@ -7,7 +8,9 @@
  */
 BooleanExpressionParser::BooleanExpressionParser(const std::string& expression,
                                                  const std::unordered_map<char, bool>& values)
-    : expression(expression), values(values), currentIndex(0), error(false) {}
+    : values(values), tokenIndex(0), error(false) {
+    tokens = explode(expression, "+*()");
+}
 
 /**
  * @brief Parse the boolean expression
@@ -16,7 +19,7 @@ BooleanExpressionParser::BooleanExpressionParser(const std::string& expression,
  */
 bool BooleanExpressionParser::parse() {
     bool result = parseExpr();
-    if (error || currentIndex != expression.size()) {
+    if (error || tokenIndex != tokens.size()) {
         reportError("Unexpected tokens after parsing.");
         return false; // Indicate parse error
     }
@@ -32,58 +35,72 @@ bool BooleanExpressionParser::hasError() const {
     return error;
 }
 
-char BooleanExpressionParser::currentChar() const {
-    if (currentIndex < expression.size()) {
-        return expression[currentIndex];
+std::string BooleanExpressionParser::currentToken() const {
+    if (tokenIndex < tokens.size()) {
+        return tokens[tokenIndex];
     }
-    return '\0';
+    return "";
 }
 
 void BooleanExpressionParser::consume() {
-    if (currentIndex < expression.size()) {
-        currentIndex++;
+    if (tokenIndex < tokens.size()) {
+        tokenIndex++;
     }
 }
 
 bool BooleanExpressionParser::parseExpr() {
     bool result = parseTerm(); // Parse AND expressions first
-    while (currentChar() == '+') {
-        consume(); // Consume the '+'
-        result = result || parseTerm();
-        if (error) return false; // Halt on error
+    while (true) {
+        std::string token = currentToken();
+        if (token == "+") {
+            consume(); // Consume the '+'
+            result = result || parseTerm();
+            if (error) return false; // Halt on error
+        } else {
+            break;
+        }
     }
     return result;
 }
 
 bool BooleanExpressionParser::parseTerm() {
     bool result = parseFactor(); // Parse primary values first
-    while (currentChar() == '*') {
-        consume(); // Consume the '*'
-        result = result && parseFactor();
-        if (error) return false; // Halt on error
+    while (true) {
+        std::string token = currentToken();
+        if (token == "*") {
+            consume(); // Consume the '*'
+            result = result && parseFactor();
+            if (error) return false; // Halt on error
+        } else {
+            break;
+        }
     }
     return result;
 }
 
 bool BooleanExpressionParser::parseFactor() {
-    char token = currentChar();
-    std::cout << "Parsing factor: " << token << std::endl; // Debug output
+    std::string token = currentToken();
 
-    if (std::isalpha(token)) {
+    if (token.empty()) {
+        reportError("Unexpected end of expression");
+        return false;
+    }
+
+    if (std::isalpha(token[0])) {
         consume();
-        if (values.find(token) != values.end()) {
-            return values.at(token);
+        if (values.find(token[0]) != values.end()) {
+            return values.at(token[0]);
         } else {
-            reportError("Undefined variable: " + std::string(1, token));
+            reportError("Undefined variable: " + token);
             return false;
         }
-    } else if (token == 'T' || token == 'F') {
+    } else if (token == "T" || token == "F") {
         consume();
-        return token == 'T';
-    } else if (token == '(') {
+        return token == "T";
+    } else if (token == "(") {
         consume(); // Consume the '('
         bool result = parseExpr();
-        if (currentChar() == ')') {
+        if (currentToken() == ")") {
             consume(); // Consume the ')'
             return result;
         } else {
@@ -91,7 +108,7 @@ bool BooleanExpressionParser::parseFactor() {
             return false;
         }
     } else {
-        reportError("Unexpected token: " + std::string(1, token));
+        reportError("Unexpected token: " + token);
         return false;
     }
 }

@@ -21,8 +21,9 @@ void readExpressionAndValues(int argc, char* argv[], std::string& expression, st
     // Read variable values
     size_t varIndex = 0;
     for (int i = 2; i < argc; ++i) {
+        std::string valueStr = removeWhitespace(argv[i]);
         char var = 'a' + varIndex; // Variables are a, b, c, ...
-        values[var] = (argv[i][0] == 'T');
+        values[var] = (valueStr[0] == 'T');
         varIndex++;
     }
 }
@@ -36,4 +37,30 @@ std::string removeWhitespace(const std::string& str) {
     std::string result;
     std::remove_copy_if(str.begin(), str.end(), std::back_inserter(result), [](unsigned char c) { return std::isspace(c); });
     return result;
+}
+
+/**
+ * @brief Explode a string into a vector of strings based on multiple delimiters.
+ * @param str The input string.
+ * @param delimiters The characters to split the string by.
+ * @return A vector of strings split by the delimiters.
+ */
+std::vector<std::string> explode(const std::string& str, const std::string& delimiters) {
+    std::vector<std::string> tokens;
+    std::string token;
+    for (char c : str) {
+        if (delimiters.find(c) != std::string::npos) {
+            if (!token.empty()) {
+                tokens.push_back(token);
+                token.clear();
+            }
+            tokens.push_back(std::string(1, c));
+        } else {
+            token += c;
+        }
+    }
+    if (!token.empty()) {
+        tokens.push_back(token);
+    }
+    return tokens;
 }

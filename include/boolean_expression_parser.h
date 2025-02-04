@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class BooleanExpressionParser {
 public:
@@ -13,12 +14,12 @@ public:
     bool hasError() const;
 
 private:
-    std::string expression;
+    std::vector<std::string> tokens;
     const std::unordered_map<char, bool>& values;
-    size_t currentIndex;
+    size_t tokenIndex;
     bool error;
 
-    char currentChar() const;
+    std::string currentToken() const;
     void consume();
     bool parseExpr();
     bool parseTerm();
