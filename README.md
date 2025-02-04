@@ -34,39 +34,39 @@ proj1/
 
 ### Header Files
 
-- `include/boolean_expression_parser.h`: 
+- `include/boolean_expression_parser.h`:
   - **Purpose**: Declares the `BooleanExpressionParser` class.
   - **Details**: Contains the class declaration and public interface for parsing and evaluating boolean expressions. It includes methods for parsing expressions, checking for errors, and reporting errors.
 
-- `include/util.h`: 
+- `include/util.h`:
   - **Purpose**: Declares utility functions.
   - **Details**: Contains declarations for functions that assist in reading expressions and variable values from command line arguments, removing whitespace from strings, and exploding strings based on delimiters.
 
 ### Source Files
 
-- `src/boolean_expression_parser.cc`: 
+- `src/boolean_expression_parser.cc`:
   - **Purpose**: Implements the `BooleanExpressionParser` class.
   - **Details**: Contains the definitions of the methods declared in the header file, including the logic for parsing and evaluating boolean expressions. It handles different components of the expression such as terms, factors, and operators.
 
-- `src/util.cc`: 
+- `src/util.cc`:
   - **Purpose**: Implements utility functions.
   - **Details**: Contains the definitions of the functions declared in the header file, including the logic for reading expressions and variable values from command line arguments, removing whitespace from strings, and exploding strings based on delimiters.
 
-- `src/main.cc`: 
+- `src/main.cc`:
   - **Purpose**: Main program that uses the `BooleanExpressionParser` class and utility functions.
   - **Details**: Contains the `main` function, which is the entry point of the program. It reads the command line arguments, creates a `BooleanExpressionParser` object, and outputs the result of the parsed expression. It also handles error reporting and ensures the correct number of arguments are provided.
 
 ### Build and Output Directories
 
-- `bin/`: 
+- `bin/`:
   - **Purpose**: Contains the executable file generated during the build process.
   - **Details**: The `evaluate-boolean` executable is the main entry point of the program.
 
-- `build/`: 
+- `build/`:
   - **Purpose**: Contains the object files generated during the build process.
   - **Details**: Includes object files for the parser logic (`boolean_expression_parser.o`), the main entry point (`main.o`), and utility functions (`util.o`).
 
-### How to Compile and Run
+## How to Compile and Run
 
 To build the project, you can use the provided `Makefile`. Here are the steps:
 
@@ -78,7 +78,7 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
    ```
 
 3. Run the following commands to run the project:
-   - **Argument Format**: `./bin/evaluate-boolean "<expression>" <values>`\n
+   - **Argument Format**: `./bin/evaluate-boolean "<expression>" <values>`
 
    ```sh
    ./bin/evaluate-boolean "a + b * c" F T F
