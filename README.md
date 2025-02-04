@@ -6,6 +6,7 @@ The purpose of this project is to provide a Boolean expression parser that can e
 
 ## Project Directory Structure
 
+```bash
 proj1/
 ├── Makefile                    # Build configuration file for make program
 |
@@ -27,6 +28,7 @@ proj1/
 │   ├── util.o                        # object for utility functions
 |
 └── README.md                   # This file
+```
 
 ## Files
 
@@ -73,11 +75,18 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
 
    ```sh
    make
-    
-   ./bin/evaluate-boolean "<expression>" <values>
+   ```
 
+   ```sh
+   ./bin/evaluate-boolean "<expression>" <values>
+   ```
+
+   ```sh
    ./bin/evaluate-boolean "a + b * c" F T F
+   ```
 
 ### Example Output
 
+   ```sh
     Result of expression is: True
+   ```
