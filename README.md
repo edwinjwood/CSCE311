@@ -71,12 +71,13 @@ proj1/
 To build the project, you can use the provided `Makefile`. Here are the steps:
 
 1. Navigate to the project directory.
-2. Run the following commands to build and run the project:
+2. Run the following commands to build the project:
 
    ```sh
    make
    ```
 
+3. Run the following commands to run the project:
    **Argument Format**: ./bin/evaluate-boolean "<expression>" <values>
 
    ```sh
