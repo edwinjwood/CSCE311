@@ -35,6 +35,10 @@ bool BooleanExpressionParser::hasError() const {
     return error;
 }
 
+/**
+ * @brief Get the current token
+ * @return std::string the current token
+ */
 std::string BooleanExpressionParser::currentToken() const {
     if (tokenIndex < tokens.size()) {
         return tokens[tokenIndex];
@@ -42,12 +46,20 @@ std::string BooleanExpressionParser::currentToken() const {
     return "";
 }
 
+/**
+ * @brief Consume the current token
+ */
 void BooleanExpressionParser::consume() {
     if (tokenIndex < tokens.size()) {
         tokenIndex++;
     }
 }
 
+/**
+ * @brief Parse the expression
+ * @return true if the expression is valid
+ * @return false if the expression is invalid
+ */
 bool BooleanExpressionParser::parseExpr() {
     bool result = parseTerm();
     if (error) return false;
@@ -65,6 +77,11 @@ bool BooleanExpressionParser::parseExpr() {
     return result;
 }
 
+/**
+ * @brief Parse the term
+ * @return true if the term is valid
+ * @return false if the term is invalid
+ */
 bool BooleanExpressionParser::parseTerm() {
     bool result = parseFactor();
     if (error) return false;
@@ -82,6 +99,11 @@ bool BooleanExpressionParser::parseTerm() {
     return result;
 }
 
+/**
+ * @brief Parse the factor
+ * @return true if the factor is valid
+ * @return false if the factor is invalid
+ */
 bool BooleanExpressionParser::parseFactor() {
     std::string token = currentToken();
 
