@@ -78,7 +78,7 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
    ```
 
 3. Run the following commands to run the project:
-   - **Argument Format**: `./bin/evaluate-boolean "<expression>" <values> \n`
+   - **Argument Format**: `./bin/evaluate-boolean "<expression>" <values>`\n
 
    ```sh
    ./bin/evaluate-boolean "a + b * c" F T F
