@@ -19,7 +19,7 @@ void readExpressionAndValues(int argc, char* argv[], std::string& expression, st
     // Read the expression and remove whitespace
     expression = removeWhitespace(argv[1]);
 
-    // Extract unique variables from the expression in the order they appear
+    // Extract unique variables from the expression in order of appearance
     std::vector<char> variables;
     std::unordered_set<char> seen;
     for (char c : expression) {
@@ -35,7 +35,7 @@ void readExpressionAndValues(int argc, char* argv[], std::string& expression, st
         exit(1);
     }
 
-    // Read variable values
+    // Map values directly to variables in order of appearance
     for (size_t i = 0; i < variables.size(); ++i) {
         std::string valueStr = removeWhitespace(argv[i + 2]);
         values[variables[i]] = (valueStr[0] == 'T');

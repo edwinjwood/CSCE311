@@ -49,31 +49,35 @@ void BooleanExpressionParser::consume() {
 }
 
 bool BooleanExpressionParser::parseExpr() {
-    bool result = parseTerm(); // Parse AND expressions first
-    while (true) {
+    bool result = parseTerm();
+    if (error) return false;
+    
+    while (tokenIndex < tokens.size()) {
         std::string token = currentToken();
-        if (token == "+") {
-            consume(); // Consume the '+'
-            result = result || parseTerm();
-            if (error) return false; // Halt on error
-        } else {
-            break;
-        }
+        if (token != "+") break;
+        
+        consume();
+        bool nextTerm = parseTerm();
+        if (error) return false;
+        
+        result = result || nextTerm;
     }
     return result;
 }
 
 bool BooleanExpressionParser::parseTerm() {
-    bool result = parseFactor(); // Parse primary values first
-    while (true) {
+    bool result = parseFactor();
+    if (error) return false;
+    
+    while (tokenIndex < tokens.size()) {
         std::string token = currentToken();
-        if (token == "*") {
-            consume(); // Consume the '*'
-            result = result && parseFactor();
-            if (error) return false; // Halt on error
-        } else {
-            break;
-        }
+        if (token != "*") break;
+        
+        consume();
+        bool nextFactor = parseFactor();
+        if (error) return false;
+        
+        result = result && nextFactor;
     }
     return result;
 }

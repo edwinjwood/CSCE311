@@ -3,6 +3,7 @@
         "unordered_map": "cpp",
         "vector": "cpp",
         "xlocale": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "xutility": "cpp"
     }
 }
