@@ -4,7 +4,7 @@
 
 The purpose of this project is to provide a Boolean expression parser that can evaluate expressions with variables and logical operators. The parser reads an expression and a set of variable values from the command line, parses the expression, and evaluates it based on the provided values. This can be useful for applications that require dynamic evaluation of logical expressions.
 
-### Project Directory Structure
+## Project Directory Structure
 
 proj1/
 ├── Makefile                    # Build configuration file for make program
