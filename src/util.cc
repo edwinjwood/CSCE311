@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <unordered_set>
 
 /**
  * @brief Read the expression and values from the command line arguments.
@@ -18,13 +19,26 @@ void readExpressionAndValues(int argc, char* argv[], std::string& expression, st
     // Read the expression and remove whitespace
     expression = removeWhitespace(argv[1]);
 
+    // Extract unique variables from the expression in the order they appear
+    std::vector<char> variables;
+    std::unordered_set<char> seen;
+    for (char c : expression) {
+        if (std::isalpha(c) && seen.find(c) == seen.end()) {
+            variables.push_back(c);
+            seen.insert(c);
+        }
+    }
+
+    // Ensure the number of provided values matches the number of variables
+    if (variables.size() != static_cast<size_t>(argc - 2)) {
+        std::cerr << "Error: Number of provided values does not match the number of variables in the expression.\n";
+        exit(1);
+    }
+
     // Read variable values
-    size_t varIndex = 0;
-    for (int i = 2; i < argc; ++i) {
-        std::string valueStr = removeWhitespace(argv[i]);
-        char var = 'a' + varIndex; // Variables are a, b, c, ...
-        values[var] = (valueStr[0] == 'T');
-        varIndex++;
+    for (size_t i = 0; i < variables.size(); ++i) {
+        std::string valueStr = removeWhitespace(argv[i + 2]);
+        values[variables[i]] = (valueStr[0] == 'T');
     }
 }
 

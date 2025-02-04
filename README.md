@@ -28,13 +28,41 @@ proj1/
 |
 └── README.md                   # This file
 
-### Files
+## Files
 
-- `include/boolean_expression_parser.h`: Header file for the `BooleanExpressionParser` class. It contains the class declaration and public interface for parsing and evaluating boolean expressions.
-- `include/util.h`: Header file for utility functions. It contains declarations for functions that assist in reading expressions and variable values from command line arguments.
-- `src/boolean_expression_parser.cc`: Implementation of the `BooleanExpressionParser` class. It contains the definitions of the methods declared in the header file, including the logic for parsing and evaluating boolean expressions.
-- `src/util.cc`: Implementation of utility functions. It contains the definitions of the functions declared in the header file, including the logic for reading expressions and variable values from command line arguments.
-- `src/main.cc`: Main program that uses the `BooleanExpressionParser` class and utility functions. It contains the `main` function, which is the entry point of the program. It reads the command line arguments, creates a `BooleanExpressionParser` object, and outputs the result of the parsed expression.
+### Header Files
+
+- `include/boolean_expression_parser.h`: 
+  - **Purpose**: Declares the `BooleanExpressionParser` class.
+  - **Details**: Contains the class declaration and public interface for parsing and evaluating boolean expressions. It includes methods for parsing expressions, checking for errors, and reporting errors.
+
+- `include/util.h`: 
+  - **Purpose**: Declares utility functions.
+  - **Details**: Contains declarations for functions that assist in reading expressions and variable values from command line arguments, removing whitespace from strings, and exploding strings based on delimiters.
+
+### Source Files
+
+- `src/boolean_expression_parser.cc`: 
+  - **Purpose**: Implements the `BooleanExpressionParser` class.
+  - **Details**: Contains the definitions of the methods declared in the header file, including the logic for parsing and evaluating boolean expressions. It handles different components of the expression such as terms, factors, and operators.
+
+- `src/util.cc`: 
+  - **Purpose**: Implements utility functions.
+  - **Details**: Contains the definitions of the functions declared in the header file, including the logic for reading expressions and variable values from command line arguments, removing whitespace from strings, and exploding strings based on delimiters.
+
+- `src/main.cc`: 
+  - **Purpose**: Main program that uses the `BooleanExpressionParser` class and utility functions.
+  - **Details**: Contains the `main` function, which is the entry point of the program. It reads the command line arguments, creates a `BooleanExpressionParser` object, and outputs the result of the parsed expression. It also handles error reporting and ensures the correct number of arguments are provided.
+
+### Build and Output Directories
+
+- `bin/`: 
+  - **Purpose**: Contains the executable file generated during the build process.
+  - **Details**: The `evaluate-boolean` executable is the main entry point of the program.
+
+- `build/`: 
+  - **Purpose**: Contains the object files generated during the build process.
+  - **Details**: Includes object files for the parser logic (`boolean_expression_parser.o`), the main entry point (`main.o`), and utility functions (`util.o`).
 
 ### How to Compile and Run
 
