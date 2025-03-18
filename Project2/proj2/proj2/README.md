@@ -93,7 +93,7 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
    - **Argument Format**: `./bin/bool-expr-server <expressions_file> <socket_name> <unit_separator> <eot>`
 
    ```sh
-   ./bin/bool-expr-server expressions.txt bool_expr_sock ":" "."
+   ./bin/bool-expr-server dat/expr_25k.txt bool_expr_sock ":" "."
    ```
 
 4. In a separate terminal, run the client:
