@@ -14,17 +14,15 @@ BUILD_DIR := build
 CLIENT_SRC := src/bool_expr_client.cc
 SERVER_SRC := src/bool_expr_server.cc
 IPC_SRC := ../ipc/src/domain_socket.cc
-SEMAPHORE_SRC := ../util/src/thread_sem_manager.cc
 PARSER_SRC := ../util/src/bool_expr_parser.cc
 
 # Object and dependency files in build/
 CLIENT_OBJS := $(addprefix $(BUILD_DIR)/, $(notdir $(CLIENT_SRC:.cc=.o))) \
-               $(addprefix $(BUILD_DIR)/, $(notdir $(IPC_SRC:.cc=.o))) \
+               $(addprefix $(BUILD_DIR)/, $(notdir $(IPC_SRC:.cc=.o)))
 
 SERVER_OBJS := $(addprefix $(BUILD_DIR)/, $(notdir $(SERVER_SRC:.cc=.o))) \
                $(addprefix $(BUILD_DIR)/, $(notdir $(IPC_SRC:.cc=.o))) \
-               $(addprefix $(BUILD_DIR)/, $(notdir $(PARSER_SRC:.cc=.o))) \
-               $(addprefix $(BUILD_DIR)/, $(notdir $(SEMAPHORE_SRC:.cc=.o)))
+               $(addprefix $(BUILD_DIR)/, $(notdir $(PARSER_SRC:.cc=.o)))
 
 # Map .d dependency files to object files
 DEPS := $(CLIENT_OBJS:.o=.d) $(SERVER_OBJS:.o=.d)
