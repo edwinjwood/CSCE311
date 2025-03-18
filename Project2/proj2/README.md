@@ -92,16 +92,12 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
 3. Start the server:
    - **Argument Format**: `./bin/bool-expr-server <expressions_file> <socket_name> <unit_separator> <eot>`
 
-   ```sh
-   ./bin/bool-expr-server dat/expr_25k.txt bool_expr_sock ":" "."
-   ```
+   - **Example**: `./bin/bool-expr-server dat/expr_25k.txt bool_expr_sock ":" "."`
 
 4. In a separate terminal, run the client:
    - **Argument Format**: `./bin/bool-expr-client <socket_name> <truth_values>`
 
-   ```sh
-   ./bin/bool-expr-client bool_expr_sock T F T F
-   ```
+   - **Example**: `./bin/bool-expr-client bool_expr_sock T F T F`
 
 ### Example Output
 
