@@ -72,10 +72,9 @@ This command runs the program with mode 0, providing 5 units of each of the thre
 
 ### Example Output
 
+```bash
 New process registered with max demand: {2 3 4}
 New process registered with max demand: {5 1 1}
-New process registered with max demand: {1 1 2}
-New process registered with max demand: {1 2 1}
 Thread 0 requested: {0 0 3}
 Need: {2 3 4}
 Available: {5 5 5}
@@ -86,30 +85,9 @@ Thread 1 requested: {3 1 0}
 Need: {5 1 1}
 Available: {5 5 2}
 Safe. Request allocated. Order: {P0 P1 P2 P3}
-Available: {2 4 2}
-Need: {2 0 1}
-Thread 0 releasing specific resources: {0 0 1}
-Updated Available: {2 4 3}
-Thread 2 requested: {1 1 1}
-Need: {1 1 2}
-Available: {2 4 3}
-Safe. Request allocated. Order: {P0 P2 P1 P3}
-Available: {1 3 2}
-Need: {0 0 1}
-Thread 3 requested: {1 1 1}
-Need: {1 2 1}
-Available: {1 3 2}
-Safe. Request allocated. Order: {P3 P0 P2 P1}
-Available: {0 2 1}
-Need: {0 1 0}
 Thread 0 releasing all resources
-Updated Available: {0 2 4}
-Thread 1 releasing all resources
-Updated Available: {3 3 4}
-Thread 2 releasing all resources
-Updated Available: {4 4 5}
-Thread 3 releasing all resources
 Updated Available: {5 5 5}
+```
 
 ## Implementation Details
 
