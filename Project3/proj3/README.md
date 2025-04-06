@@ -64,11 +64,17 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
    `make`
 3. Run the program:
 
-- **Format**: `./bankers-threads <mode> "<initial_resources>" "<parameters>"`
+- **Format**: `./bankers-threads <thread_count> "<initial_resources>" "<max_demands_1>" "<max_demands_2>" ...`
 
-- **Example**: `./bankers-threads 0 "5 5 5" "1 1 1"`
+- **Example**: `./bankers-threads 7 "5 5 5" "2 3 4" "1 5 5" "2 3 3" "5 5 1"`
 
-This command runs the program with mode 0, providing 5 units of each of the three resource types as initial resources, and additional parameters for the simulation.
+Where:
+
+- `thread_count`: Number of threads/processes to create in the simulation
+- `initial_resources`: Available resources at program start (e.g., "5 5 5" means 5 units of each of the three resource types)
+- `max_demands_X`: Maximum resource demands for each process (each set in quotes)
+
+This example creates 7 threads with the specified initial resources (5 units of each type) and various maximum resource demands for different processes.
 
 ### Example Output
 
