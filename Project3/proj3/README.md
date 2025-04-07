@@ -68,7 +68,7 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
 
 - **Example**: `./bankers-threads 7 "5 5 5" "2 3 4" "1 5 5" "2 3 3" "5 5 1"`
 
-Where:
+Usage Details:
 
 - `random seed`: Seed for the random number generator to create consistent test scenarios
 - `available`: Available resources at program start (e.g., "5 5 5" means 5 units of each of the three resource types)
