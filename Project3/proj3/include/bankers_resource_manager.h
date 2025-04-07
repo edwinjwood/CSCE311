@@ -1,62 +1,66 @@
+#ifndef BANKERS_RESOURCE_MANAGER_H_
+#define BANKERS_RESOURCE_MANAGER_H_
 
-#ifndef PROJ3_INCLUDE_BANKERS_RESOURCE_MANAGER_H_
-#define PROJ3_INCLUDE_BANKERS_RESOURCE_MANAGER_H_
-
-#include <cstddef>  // for std::size_t
-#include <string>
+#include <thread_mutex.h>
 #include <vector>
-#include <algorithm>  // Include this for std::all_of used in bankers_thread.cc
-#include <thread_mutex.h>  // Include thread mutex header
+#include <string>
+#include <algorithm>
 
 class BankersResourceManager {
  public:
-  // Constructor with available resources
-  explicit BankersResourceManager(const std::vector<std::size_t>& available);
+  // Constructor
+  BankersResourceManager(const std::vector<std::size_t>& available);
 
-  // Add a new process with maximum resource needs
+  // Register a new process with its maximum resource requirements
   void AddMax(const std::vector<std::size_t>& max_demand);
 
   // Request resources for a process
-  // Returns true if request is granted
   bool Request(std::size_t process_id, const std::vector<std::size_t>& request);
 
+  // Release resources held by a process
+  bool Release(std::size_t process_id, const std::vector<std::size_t>& release);
+  
   // Release all resources held by a process
   bool Release(std::size_t process_id);
 
-  // Release specific resources from a process
-  // This was missing in the header but implemented in the .cc file
-  bool Release(std::size_t process_id, const std::vector<std::size_t>& release);
+  // Check if the current state is safe
+  bool IsSafeState() const;
 
-  // Get available resources
-  std::vector<std::size_t> GetAvailable() const;
-
-  // Get allocation for a specific process
-  std::vector<std::size_t> GetAllocation(std::size_t process_id) const;
-
-  // Get maximum needs for a specific process
-  std::vector<std::size_t> GetMax(std::size_t process_id) const;
-
-  // Get a string representation of the current state
+  // Get string representation of the system state
   std::string GetStateString() const;
 
+  // Getters
+  std::vector<std::size_t> GetAvailable() const;
+  std::vector<std::size_t> GetAllocation(std::size_t process_id) const;
+  std::vector<std::size_t> GetMax(std::size_t process_id) const;
+
  private:
-  // Mutex for thread synchronization
-  mutable ThreadMutex mutex_;
+  // Helper method to check if a request is valid
+  bool IsRequestValid(std::size_t process_id, const std::vector<std::size_t>& request);
   
-  // Check if system is in a safe state
-  bool IsSafeState() const;
+  // Helper method to check if a process can complete with given resources
+  bool CanProcessComplete(std::size_t pid, const std::vector<std::size_t>& available_work) const;
+  
+  // Helper method to find a safe execution sequence
+  bool FindSafeSequence(std::vector<size_t>& safe_sequence);
+  
+  // Helper method to display the current state of a process
+  void DisplayProcessState(std::size_t process_id);
 
   // Available resources
   std::vector<std::size_t> available_;
-
-  // Maximum demand of each process
+  
+  // Maximum demand for each process
   std::vector<std::vector<std::size_t>> max_;
-
-  // Current allocation to each process
+  
+  // Current allocation for each process
   std::vector<std::vector<std::size_t>> allocation_;
-
+  
   // Number of resource types
   std::size_t n_resources_;
+  
+  // Mutex for thread safety
+  mutable ThreadMutex mutex_;
 };
 
-#endif  // PROJ3_INCLUDE_BANKERS_RESOURCE_MANAGER_H_
+#endif  // BANKERS_RESOURCE_MANAGER_H_

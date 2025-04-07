@@ -79,20 +79,18 @@ This example creates 7 threads with the specified initial resources (5 units of 
 ### Example Output
 
 ```bash
-New process registered with max demand: {2 3 4}
-New process registered with max demand: {5 1 1}
 Thread 0 requested: {0 0 3}
-Need: {2 3 4}
-Available: {5 5 5}
-Safe. Request allocated. Order: {P0 P1 P2 P3}
-Available: {5 5 2}
-Need: {2 3 1}
+   Need: {2 3 4}
+   Available: {5 5 5}
+   Safe. Request allocated. Order: {P0 P1 P2 P3}
+   Available: {5 5 2}
+   Need: {2 3 1}
 Thread 1 requested: {3 1 0}
-Need: {5 1 1}
-Available: {5 5 2}
-Safe. Request allocated. Order: {P0 P1 P2 P3}
-Thread 0 releasing all resources
-Updated Available: {5 5 5}
+   Need: {5 1 1}
+   Available: {5 5 2}
+   Safe. Request allocated. Order: {P0 P1 P2 P3}
+   Thread 0 releasing all resources
+   Updated Available: {5 5 5}
 ```
 
 ## Implementation Details

@@ -25,16 +25,15 @@ void BankersResourceManager::AddMax(const std::vector<std::size_t>& max_demand) 
   allocation_.push_back(std::vector<std::size_t>(n_resources_, 0));
   
   // Debug output showing the newly registered process
-  std::cout << "New process registered with max demand: {";
-  for (std::size_t i = 0; i < max_demand.size(); ++i) {
-    std::cout << max_demand[i];
-    if (i < max_demand.size() - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
+  // std::cout << "New process registered with max demand: {";
+  // for (std::size_t i = 0; i < max_demand.size(); ++i) {
+  //   std::cout << max_demand[i];
+  //   if (i < max_demand.size() - 1) std::cout << " ";
+  // }
+  // std::cout << "}" << std::endl;
 }
 
-bool BankersResourceManager::Request(std::size_t process_id,
-                                   const std::vector<std::size_t>& request) {
+bool BankersResourceManager::Request(std::size_t process_id, const std::vector<std::size_t>& request) {
   // Create a mutex guard for thread safety
   ThreadMutexGuard guard(mutex_);
 
@@ -50,136 +49,49 @@ bool BankersResourceManager::Request(std::size_t process_id,
   if (request.size() != n_resources_ || process_id >= allocation_.size())
     return false;
 
-  // Display the current need (Max - Allocation) for this process
-  std::cout << "Need: {";
-  for (std::size_t i = 0; i < n_resources_; ++i) {
-    std::cout << (max_[process_id][i] - allocation_[process_id][i]);
-    if (i < n_resources_ - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
+  // Display current state
+  DisplayProcessState(process_id);
   
-  // Show currently available resources
-  std::cout << "Available: {";
-  for (std::size_t i = 0; i < available_.size(); ++i) {
-    std::cout << available_[i];
-    if (i < available_.size() - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
+  // Steps 1 & 2: Validation checks
+  if (!IsRequestValid(process_id, request))
+    return false;
 
-  // Step 1: Check if request exceeds the process's remaining need
-  for (std::size_t i = 0; i < n_resources_; ++i) {
-    if (request[i] > max_[process_id][i] - allocation_[process_id][i]) {
-      std::cout << "Request exceeds max need. Request denied." << std::endl;
-      return false;  // Process is requesting more than it declared it would need
-    }
-  }
-
-  // Step 2: Check if enough resources are currently available
-  for (std::size_t i = 0; i < n_resources_; ++i) {
-    if (request[i] > available_[i]) {
-      std::cout << "Not available. Request denied." << std::endl;
-      return false;  // Not enough resources available right now
-    }
-  }
-
-  // Step 3: Try to allocate resources (tentatively)
-  // Save current state in case we need to roll back
-  std::vector<std::size_t> saved_available = available_;
-  std::vector<std::size_t> saved_allocation = allocation_[process_id];
-
-  // Update state tentatively - pretend we grant the request
+  // Step 3: Save state and tentatively allocate resources
+  auto saved_state = std::make_pair(available_, allocation_[process_id]);
+  
+  // Update state tentatively
   for (std::size_t i = 0; i < n_resources_; ++i) {
     available_[i] -= request[i];
     allocation_[process_id][i] += request[i];
   }
 
-  // Step 4: Check if system remains in a safe state after allocation
-  // A safe state means all processes can eventually complete without deadlock
-
-  // Run safety check to get the sequence of safe process execution
-  const size_t n_processes = allocation_.size();
-  std::vector<bool> can_complete(n_processes, false);
+  // Step 4: Check if system remains in a safe state
   std::vector<size_t> safe_sequence;
-  auto available_work = available_;
-
-  bool found_completable_process;
-  bool is_safe = true;
-
-  do {
-    found_completable_process = false;
-
-    for (size_t pid = 0; pid < n_processes; ++pid) {
-      // Skip processes we've already determined can complete
-      if (can_complete[pid]) 
-        continue;
-
-      // Check if this process's remaining needs can be satisfied
-      bool has_enough_resources = true;
-      for (size_t r = 0; r < n_resources_; ++r) {
-        if (max_[pid][r] - allocation_[pid][r] > available_work[r]) {
-          has_enough_resources = false;
-          break;
-        }
-      }
-
-      if (has_enough_resources) {
-        // This process can complete, so simulate it finishing and releasing resources
-        for (size_t r = 0; r < n_resources_; ++r) {
-          available_work[r] += allocation_[pid][r];
-        }
-        can_complete[pid] = true;
-        found_completable_process = true;
-        // Add to our safe execution sequence
-        safe_sequence.push_back(pid);
-      }
-    }
-  } while (found_completable_process);
-
-  // Check if all processes can complete (system is in safe state)
-  for (bool process_can_complete : can_complete) {
-    if (!process_can_complete) {
-      is_safe = false;
-      break;
-    }
-  }
+  bool is_safe = FindSafeSequence(safe_sequence);
 
   if (!is_safe) {
-    // Step 5a: If not safe, restore previous state to prevent deadlock
-    available_ = saved_available;
-    allocation_[process_id] = saved_allocation;
-    std::cout << "Unsafe state. Request denied." << std::endl;
-    return false;  // Cannot grant request as it could lead to deadlock
+    // Step 5a: If not safe, restore previous state
+    available_ = saved_state.first;
+    allocation_[process_id] = saved_state.second;
+    std::cout << "   Unsafe state. Request denied." << std::endl;
+    return false;
   }
 
   // Step 5b: If safe, keep the allocation and show execution order
-  std::cout << "Safe. Request allocated. Order: {";
+  std::cout << "   Safe. Request allocated. Order: {";
   for (std::size_t i = 0; i < safe_sequence.size(); ++i) {
     std::cout << "P" << safe_sequence[i];
     if (i < safe_sequence.size() - 1) std::cout << " ";
   }
   std::cout << "}" << std::endl;
 
-  // Show updated available resources
-  std::cout << "Available: {";
-  for (std::size_t i = 0; i < available_.size(); ++i) {
-    std::cout << available_[i];
-    if (i < available_.size() - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
+  // Show updated state
+  DisplayProcessState(process_id);
   
-  // Show updated need for this process
-  std::cout << "Need: {";
-  for (std::size_t i = 0; i < n_resources_; ++i) {
-    std::cout << (max_[process_id][i] - allocation_[process_id][i]);
-    if (i < n_resources_ - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
-
   return true;
 }
 
-bool BankersResourceManager::Release(std::size_t process_id,
-                                   const std::vector<std::size_t>& release) {
+bool BankersResourceManager::Release(std::size_t process_id, const std::vector<std::size_t>& release) {
   // Create a mutex guard for thread safety
   ThreadMutexGuard guard(mutex_);
 
@@ -208,7 +120,7 @@ bool BankersResourceManager::Release(std::size_t process_id,
   }
 
   // Show updated available resources
-  std::cout << "Updated Available: {";
+  std::cout << "   Updated Available: {";
   for (std::size_t i = 0; i < available_.size(); ++i) {
     std::cout << available_[i];
     if (i < available_.size() - 1) std::cout << " ";
@@ -236,7 +148,7 @@ bool BankersResourceManager::Release(std::size_t process_id) {
   }
 
   // Show updated available resources
-  std::cout << "Updated Available: {";
+  std::cout << "   Updated Available: {";
   for (std::size_t i = 0; i < available_.size(); ++i) {
     std::cout << available_[i];
     if (i < available_.size() - 1) std::cout << " ";
@@ -246,52 +158,91 @@ bool BankersResourceManager::Release(std::size_t process_id) {
   return true;
 }
 
-bool BankersResourceManager::IsSafeState() const {
-  // This method implements the safety algorithm of Banker's Algorithm
-  // It determines if a state is safe by checking if all processes can eventually complete
-  
+bool BankersResourceManager::IsRequestValid(std::size_t process_id, const std::vector<std::size_t>& request) {
+  for (std::size_t i = 0; i < n_resources_; ++i) {
+    // Check if request exceeds the process's remaining need
+    if (request[i] > max_[process_id][i] - allocation_[process_id][i]) {
+      std::cout << "   Request exceeds max need. Request denied." << std::endl;
+      return false;
+    }
+    
+    // Check if enough resources are currently available
+    if (request[i] > available_[i]) {
+      std::cout << "   Not available. Request denied." << std::endl;
+      return false;
+    }
+  }
+  return true;
+}
+
+bool BankersResourceManager::CanProcessComplete(std::size_t pid, const std::vector<std::size_t>& available_work) const {
+  for (std::size_t r = 0; r < n_resources_; ++r) {
+    if (max_[pid][r] - allocation_[pid][r] > available_work[r]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool BankersResourceManager::FindSafeSequence(std::vector<size_t>& safe_sequence) {
   const size_t n_processes = allocation_.size();
-  
-  // Track which processes can complete
   std::vector<bool> can_complete(n_processes, false);
+  safe_sequence.clear();
   
-  // Work array - starts with currently available resources
-  // This simulates resource availability as processes complete
   auto available_work = available_;
   
-  // Keep looking for processes that can complete with available resources
-  bool found_completable_process;
+  // Find a safe execution sequence
+  bool found_completable;
   do {
-    found_completable_process = false;
+    found_completable = false;
     
     for (size_t pid = 0; pid < n_processes; ++pid) {
       if (can_complete[pid]) 
         continue;
       
-      bool has_enough_resources = true;
-      for (size_t r = 0; r < n_resources_; ++r) {
-        if (max_[pid][r] - allocation_[pid][r] > available_work[r]) {
-          has_enough_resources = false;
-          break;
-        }
-      }
-      
-      if (has_enough_resources) {
+      if (CanProcessComplete(pid, available_work)) {
+        // Process can complete - simulate resource release
         for (size_t r = 0; r < n_resources_; ++r) {
           available_work[r] += allocation_[pid][r];
         }
         can_complete[pid] = true;
-        found_completable_process = true;
+        found_completable = true;
+        safe_sequence.push_back(pid);
       }
     }
-  } while (found_completable_process);
+  } while (found_completable);
   
-  // System is safe if all processes can complete
-  for (bool process_can_complete : can_complete) {
-    if (!process_can_complete)
+  // Check if all processes can complete
+  for (bool process_complete : can_complete) {
+    if (!process_complete) {
       return false;
+    }
   }
   return true;
+}
+
+void BankersResourceManager::DisplayProcessState(std::size_t process_id) {
+  // Display the current need (Max - Allocation) for this process
+  std::cout << "   Need: {";
+  for (std::size_t i = 0; i < n_resources_; ++i) {
+    std::cout << (max_[process_id][i] - allocation_[process_id][i]);
+    if (i < n_resources_ - 1) std::cout << " ";
+  }
+  std::cout << "}" << std::endl;
+  
+  // Show currently available resources
+  std::cout << "   Available: {";
+  for (std::size_t i = 0; i < available_.size(); ++i) {
+    std::cout << available_[i];
+    if (i < available_.size() - 1) std::cout << " ";
+  }
+  std::cout << "}" << std::endl;
+}
+
+bool BankersResourceManager::IsSafeState() const {
+  // Use the FindSafeSequence method but discard the sequence
+  std::vector<size_t> dummy_sequence;
+  return const_cast<BankersResourceManager*>(this)->FindSafeSequence(dummy_sequence);
 }
 
 std::string BankersResourceManager::GetStateString() const {
@@ -340,8 +291,7 @@ std::vector<std::size_t> BankersResourceManager::GetAvailable() const {
   return available_;
 }
 
-std::vector<std::size_t> BankersResourceManager::GetAllocation(
-    std::size_t process_id) const {
+std::vector<std::size_t> BankersResourceManager::GetAllocation(std::size_t process_id) const {
   // Create a mutex guard for thread safety
   ThreadMutexGuard guard(mutex_);
   
@@ -351,8 +301,7 @@ std::vector<std::size_t> BankersResourceManager::GetAllocation(
   return allocation_[process_id];
 }
 
-std::vector<std::size_t> BankersResourceManager::GetMax(
-    std::size_t process_id) const {
+std::vector<std::size_t> BankersResourceManager::GetMax(std::size_t process_id) const {
   // Create a mutex guard for thread safety
   ThreadMutexGuard guard(mutex_);
   
