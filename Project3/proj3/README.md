@@ -64,15 +64,15 @@ To build the project, you can use the provided `Makefile`. Here are the steps:
    `make`
 3. Run the program:
 
-- **Format**: `./bankers-threads <thread_count> "<initial_resources>" "<max_demands_1>" "<max_demands_2>" ...`
+- **Format**: `bankers-threads <random seed> "available" "max 1" "max 2" ... "max n"`
 
 - **Example**: `./bankers-threads 7 "5 5 5" "2 3 4" "1 5 5" "2 3 3" "5 5 1"`
 
 Where:
 
-- `thread_count`: Number of threads/processes to create in the simulation
-- `initial_resources`: Available resources at program start (e.g., "5 5 5" means 5 units of each of the three resource types)
-- `max_demands_X`: Maximum resource demands for each process (each set in quotes)
+- `random seed`: Seed for the random number generator to create consistent test scenarios
+- `available`: Available resources at program start (e.g., "5 5 5" means 5 units of each of the three resource types)
+- `max1, max2, etc.:`: Maximum resource demands for each process (each set in quotes)
 
 This example creates 7 threads with the specified initial resources (5 units of each type) and various maximum resource demands for different processes.
 
@@ -89,7 +89,7 @@ Thread 1 requested: {3 1 0}
    Need: {5 1 1}
    Available: {5 5 2}
    Safe. Request allocated. Order: {P0 P1 P2 P3}
-   Thread 0 releasing all resources
+Thread 0 releasing all resources: {0 0 3}
    Updated Available: {5 5 5}
 ```
 

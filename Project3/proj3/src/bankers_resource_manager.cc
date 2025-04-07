@@ -134,12 +134,20 @@ bool BankersResourceManager::Release(std::size_t process_id) {
   // Create a mutex guard for thread safety
   ThreadMutexGuard guard(mutex_);
 
-  // Debug output
-  std::cout << "Thread " << process_id << " releasing all resources" << std::endl;
-
-  // Validate process_id
+  // Validate process_id first
   if (process_id >= allocation_.size())
     return false;
+    
+  // Save current allocation before releasing (to show what was released)
+  auto released_resources = allocation_[process_id];
+
+  // Debug output
+  std::cout << "Thread " << process_id << " releasing all resources: {";
+  for (std::size_t i = 0; i < n_resources_; ++i) {
+    std::cout << released_resources[i];
+    if (i < n_resources_ - 1) std::cout << " ";
+  }
+  std::cout << "}" << std::endl;
 
   // Release all resources held by the process
   for (std::size_t i = 0; i < n_resources_; ++i) {
