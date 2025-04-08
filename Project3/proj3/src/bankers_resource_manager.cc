@@ -73,12 +73,12 @@ bool BankersResourceManager::Request(std::size_t process_id, const std::vector<s
     // Step 5a: If not safe, restore previous state
     available_ = saved_state.first;
     allocation_[process_id] = saved_state.second;
-    std::cout << "   Unsafe state. Request denied." << std::endl;
+    std::cout << "   Unsafe, Request denied." << std::endl;
     return false;
   }
 
   // Step 5b: If safe, keep the allocation and show execution order
-  std::cout << "   Safe. Request allocated. Order: {";
+  std::cout << "   Safe, Order: {";
   for (std::size_t i = 0; i < safe_sequence.size(); ++i) {
     std::cout << "P" << safe_sequence[i];
     if (i < safe_sequence.size() - 1) std::cout << " ";
@@ -91,44 +91,44 @@ bool BankersResourceManager::Request(std::size_t process_id, const std::vector<s
   return true;
 }
 
-bool BankersResourceManager::Release(std::size_t process_id, const std::vector<std::size_t>& release) {
-  // Create a mutex guard for thread safety
-  ThreadMutexGuard guard(mutex_);
+// bool BankersResourceManager::Release(std::size_t process_id, const std::vector<std::size_t>& release) {
+//   // Create a mutex guard for thread safety
+//   ThreadMutexGuard guard(mutex_);
 
-  // Debug output
-  std::cout << "Thread " << process_id << " releasing specific resources: {";
-  for (std::size_t i = 0; i < release.size(); ++i) {
-    std::cout << release[i];
-    if (i < release.size() - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
+//   // Debug output
+//   std::cout << "Thread " << process_id << " releasing specific resources: {";
+//   for (std::size_t i = 0; i < release.size(); ++i) {
+//     std::cout << release[i];
+//     if (i < release.size() - 1) std::cout << " ";
+//   }
+//   std::cout << "}" << std::endl;
 
-  // Validate release size and process_id
-  if (release.size() != n_resources_ || process_id >= allocation_.size())
-    return false;
+//   // Validate release size and process_id
+//   if (release.size() != n_resources_ || process_id >= allocation_.size())
+//     return false;
 
-  // Check if process is trying to release more resources than it has
-  for (std::size_t i = 0; i < n_resources_; ++i) {
-    if (release[i] > allocation_[process_id][i])
-      return false;  // Can't release more than what's allocated
-  }
+//   // Check if process is trying to release more resources than it has
+//   for (std::size_t i = 0; i < n_resources_; ++i) {
+//     if (release[i] > allocation_[process_id][i])
+//       return false;  // Can't release more than what's allocated
+//   }
 
-  // Release resources - decrease allocation and increase availability
-  for (std::size_t i = 0; i < n_resources_; ++i) {
-    allocation_[process_id][i] -= release[i];
-    available_[i] += release[i];
-  }
+//   // Release resources - decrease allocation and increase availability
+//   for (std::size_t i = 0; i < n_resources_; ++i) {
+//     allocation_[process_id][i] -= release[i];
+//     available_[i] += release[i];
+//   }
 
-  // Show updated available resources
-  std::cout << "   Updated Available: {";
-  for (std::size_t i = 0; i < available_.size(); ++i) {
-    std::cout << available_[i];
-    if (i < available_.size() - 1) std::cout << " ";
-  }
-  std::cout << "}" << std::endl;
+//   // Show updated available resources
+//   std::cout << "   Updated Available: {";
+//   for (std::size_t i = 0; i < available_.size(); ++i) {
+//     std::cout << available_[i];
+//     if (i < available_.size() - 1) std::cout << " ";
+//   }
+//   std::cout << "}" << std::endl;
 
-  return true;
-}
+//   return true;
+// }
 
 bool BankersResourceManager::Release(std::size_t process_id) {
   // Create a mutex guard for thread safety

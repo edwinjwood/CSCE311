@@ -18,7 +18,7 @@ class BankersResourceManager {
   bool Request(std::size_t process_id, const std::vector<std::size_t>& request);
 
   // Release resources held by a process
-  bool Release(std::size_t process_id, const std::vector<std::size_t>& release);
+  // bool Release(std::size_t process_id, const std::vector<std::size_t>& release);
   
   // Release all resources held by a process
   bool Release(std::size_t process_id);
