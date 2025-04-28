@@ -16,46 +16,36 @@ proj4/
 |
 +-- README.md
 ```
+
 ## Files
 
 ### Header Files
 
-- `include/bankers_resource_manager.h`:
-  - **Purpose**: Declares the `BankersResourceManager` class.
-  - **Details**: Defines the interface for resource allocation and deallocation using the Banker's Algorithm. Includes methods for requesting resources, releasing resources, and checking if the system is in a safe state.
+- `include/n_sat_solver.h`:
+  - **Purpose**: Declares the `NSatSolver` class and supporting structures.
+  - **Details**: Defines the interface for loading expressions, solving them in parallel, and managing thread synchronization. Includes the ThreadData and ThreadStats structures for thread management.
 
 ### Source Files
 
-- `src/bankers_resource_manager.cc`:
-  - **Purpose**: Implements the Banker's Algorithm.
-  - **Details**: Contains the implementation of resource allocation, deallocation, and safety checking. Uses thread synchronization to ensure thread safety during resource manipulation.
+- `src/n_sat_solver.cc`:
+  - **Purpose**: Implements the N-SAT solver with memory-mapped file I/O and multi-threading.
+  - **Details**: Contains the implementation for loading expressions using memory mapping, distributing work among threads, solving expressions in parallel, and collecting results. Includes proper thread synchronization and memory management.
 
-## Understanding the Banker's Algorithm
+## Understanding the N-SAT Problem
 
-The Banker's Algorithm prevents deadlocks by keeping track of:
+The N-SAT problem deals with determining whether a boolean expression with N variables is satisfiable (has at least one assignment that makes it true). This implementation:
 
-1. **Available Resources**: The number of available resources of each type
-2. **Maximum Need**: The maximum demand of each process
-3. **Current Allocation**: Resources currently allocated to each process
-4. **Remaining Need**: Resources still needed by each process (Maximum - Allocation)
-
-When a process requests resources, the algorithm:
-
-1. Checks if the request exceeds the process's declared maximum need
-2. Checks if enough resources are available
-3. Tentatively grants the request
-4. Checks if the resulting state is safe
-5. If safe, confirms the allocation; if unsafe, reverts and denies the request
-
-A state is considered safe if there exists a sequence in which all processes can complete execution.
+1. Loads expressions from a file using memory-mapped I/O
+2. Distributes these expressions among multiple threads
+3. Evaluates each expression to determine if it's satisfiable (SAT) or unsatisfiable (UNSAT)
+4. Collects the results and presents statistics per thread and overall
 
 ## How to Compile and Run
 
 To build the project, you can use the provided `Makefile`. Here are the steps:
 
 1. Navigate to the project directory.
-2. Run the following commands to build the project:
-   `make`
+2. Run the following commands to build the project: `make`
 3. Run the program:
 
 - **Format**: `./n-sat-solver <number_of_threads> <input_file> <number_of_variables>`
